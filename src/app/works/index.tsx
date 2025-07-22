@@ -1,5 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/page.tsx
+"use client";
+
+import { useEffect, useState } from "react";
 
 async function getPosts() {
   const res = await fetch(
@@ -15,20 +17,49 @@ async function getPosts() {
 
   return publishedPosts;
 }
-export default async function Home() {
-  const { docs } = await getPosts();
+
+export default function Home() {
+  const [posts, setPosts] = useState<any[]>([]);
+  const [selectedPost, setSelectedPost] = useState<any | null>(null);
+
+  useEffect(() => {
+    getPosts().then(setPosts);
+  }, []);
 
   return (
     <main>
       <h1>記事一覧</h1>
-      {docs.length === 0 ? (
+      {posts.length === 0 ? (
         <p>記事がありません</p>
       ) : (
         <ul>
-          {docs.map((post: any) => (
-            <li key={post.id}>{post.title}</li>
+          {posts.map((post) => (
+            <li key={post.id}>
+              <button
+                onClick={() => setSelectedPost(post)}
+                className="text-blue-600 underline"
+              >
+                {post.title}
+              </button>
+            </li>
           ))}
         </ul>
+      )}
+
+      {/* モーダル表示 */}
+      {selectedPost && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded w-96 shadow-lg relative">
+            <h2 className="text-xl font-bold mb-2">{selectedPost.title}</h2>
+            <p>{selectedPost.description ?? "詳細はありません。"}</p>
+            <button
+              className="absolute top-2 right-2 text-gray-600 hover:text-black"
+              onClick={() => setSelectedPost(null)}
+            >
+              ×
+            </button>
+          </div>
+        </div>
       )}
     </main>
   );
