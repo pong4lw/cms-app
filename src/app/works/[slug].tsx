@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // pages/works/[slug].tsx
 
 import { GetStaticPaths, GetStaticProps } from "next";
