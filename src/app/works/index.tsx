@@ -2,17 +2,18 @@
 
 async function getPosts() {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/pages?where[status][equals]=published&sort=-createdAt`,
-    {
-      next: { revalidate: 60 },
-    },
+    `${process.env.NEXT_PUBLIC_API_URL}/api/pages?sort=-createdAt`,
+    { next: { revalidate: 60 } },
   );
-  if (!res.ok) {
-    throw new Error("Failed to fetch posts");
-  }
-  return res.json();
-}
+  const data = await res.json();
 
+  // _status で公開中（published）のみを抽出
+  const publishedPosts = data.docs.filter(
+    (doc: any) => doc._status === "published",
+  );
+
+  return publishedPosts;
+}
 export default async function Home() {
   const { docs } = await getPosts();
 
