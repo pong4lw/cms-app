@@ -14,7 +14,7 @@ type Props = {
 };
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const res = await fetch("http://localhost:3000/api/works");
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/pages`);
   const json = await res.json();
 
   return {

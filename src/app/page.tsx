@@ -2,7 +2,7 @@
 
 async function getPosts() {
   const res = await fetch(
-    "http://localhost:3000/api/pages?where[status][equals]=published&sort=-createdAt",
+    `${process.env.NEXT_PUBLIC_API_URL}/api/pages?where[status][equals]=published&sort=-createdAt`,
     {
       next: { revalidate: 60 },
     },

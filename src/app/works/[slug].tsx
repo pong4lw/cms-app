@@ -15,7 +15,7 @@ type Props = {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const res = await fetch(
-    "http://localhost:3000/api/pages?where[status][equals]=published&sort=-createdAt",
+    `${process.env.NEXT_PUBLIC_API_URL}/api/pages?where[status][equals]=published&sort=-createdAt`,
   );
 
   const json = await res.json();
@@ -38,7 +38,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   try {
     const slug = params?.slug;
     const res = await fetch(
-      `http://localhost:3000/api/works?where[slug][equals]=${slug}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/works?where[slug][equals]=${slug}`,
     );
     const json = await res.json();
 
