@@ -1,4 +1,6 @@
 // app/components/Modal.tsx
+"use client";
+
 export default function Modal({
   title,
   date,
@@ -10,7 +12,7 @@ export default function Modal({
 }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg bg-opacity-50 p-6 max-w-md w-full shadow-lg">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-lg">
         <h2 className="text-2xl font-bold mb-4">{title}</h2>
         <time className="text-sm text-gray-500">{date}</time>
         <div className="mt-6 text-right">

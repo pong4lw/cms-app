@@ -1,16 +1,10 @@
 // components/ui/MotionWrapper.tsx
-import { motion } from "framer-motion"
-import { PropsWithChildren } from "react"
+"use client";
 
-export default function MotionWrapper({ children }: PropsWithChildren) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true }}
-    >
-      {children}
-    </motion.div>
-  )
-}
+import { PropsWithChildren } from "react";
+import MotionWrapper from "@/components/ui/MotionWrapper";
+
+const MotionWrapper = ({ children }: { children: React.ReactNode }) => {
+  return <div className="motion">{children}</div>;
+};
+export default MotionWrapper;
