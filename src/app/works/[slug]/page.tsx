@@ -1,17 +1,61 @@
-import { fetchWorkBySlug } from '@/lib/fetchWorks'
-import { notFound } from 'next/navigation'
+import { fetchWorkBySlug } from "@/lib/fetchWorks";
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
 
 type Props = {
-  params: { slug: string }
+  params: { slug: string };
+};
+
+// ✅ メタデータ生成（SEO対応）
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const work = await fetchWorkBySlug(params.slug);
+
+  if (!work) {
+    return {
+      title: "ページが見つかりません",
+      description: "指定された実績は存在しません。",
+    };
+  }
+
+  const title = `${work.title} | 制作実績`;
+  const description = work.description ?? "制作実績の詳細ページです。";
+  const ogImage =
+    work.image?.url ?? `${process.env.NEXT_PUBLIC_CMS_URL}/default-ogp.jpg`;
+  const url = `${process.env.NEXT_PUBLIC_CMS_URL}/works/${params.slug}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url,
+      type: "article",
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: work.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
+  };
 }
 
+// ✅ ページ本体
 export default async function WorkDetailPage({ params }: Props) {
-  const work = await fetchWorkBySlug(params.slug)
-console.log(work)
-  if (!work) return notFound()
+  const work = await fetchWorkBySlug(params.slug);
+  if (!work) return notFound();
 
   // RichTextをHTMLへ変換（null/undefined 対策付き）
-  const html = work.content ? work.content : ''
+  const html = work.content ?? "";
 
   return (
     <main className="max-w-3xl mx-auto p-6">
@@ -23,10 +67,7 @@ console.log(work)
           className="rounded-xl mb-6"
         />
       )}
-      <div
-        className="prose"
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+      <div className="prose" dangerouslySetInnerHTML={{ __html: html }} />
     </main>
-  )
+  );
 }

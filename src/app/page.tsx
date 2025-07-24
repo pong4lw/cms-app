@@ -1,8 +1,38 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { Metadata } from "next";
 import Link from "next/link";
 import { fetchWorks } from "@/lib/fetchWorks";
 import WorkListWithModal from "@/components/WorkListWithModal";
+
+// ✅ SEOメタデータ（トップページ用）
+export const metadata: Metadata = {
+  title: "ポートフォリオ | エンジニアの実績一覧",
+  description:
+    "フロントエンド・バックエンド・デザインなど幅広い実績を紹介しています。",
+  openGraph: {
+    title: "ポートフォリオ | エンジニアの実績一覧",
+    description:
+      "フロントエンド・バックエンド・デザインなど幅広い実績を紹介しています。",
+    url: "https://yourdomain.com",
+    type: "website",
+    images: [
+      {
+        url: "https://yourdomain.com/ogp-home.jpg", // OGP用画像（1200x630 推奨）
+        width: 1200,
+        height: 630,
+        alt: "ポートフォリオのOGP画像",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ポートフォリオ | エンジニアの実績一覧",
+    description:
+      "フロントエンド・バックエンド・デザインなど幅広い実績を紹介しています。",
+    images: ["https://yourdomain.com/ogp-home.jpg"],
+  },
+};
 
 export default async function Home() {
   const works = await fetchWorks();
