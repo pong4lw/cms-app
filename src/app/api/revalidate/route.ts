@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   try {
     const path = `/works/${slug}`; // 再生成したいページのパス
     await fetch(
-      `http://localhost:3000/api/revalidate?path=${path}&secret=${process.env.REVALIDATE_SECRET_TOKEN}`,
+      `${process.env.NEXT_PUBLIC_CMS_URL}/api/revalidate?path=${path}&secret=${process.env.REVALIDATE_SECRET_TOKEN}`,
     );
     return NextResponse.json({ revalidated: true, path });
   } catch (err) {

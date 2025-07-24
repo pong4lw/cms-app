@@ -14,11 +14,11 @@ export const metadata: Metadata = {
     title: "ポートフォリオ | エンジニアの実績一覧",
     description:
       "フロントエンド・バックエンド・デザインなど幅広い実績を紹介しています。",
-    url: "https://yourdomain.com",
+    url: `${process.env.NEXT_PUBLIC_CMS_URL}`,
     type: "website",
     images: [
       {
-        url: "https://yourdomain.com/ogp-home.jpg", // OGP用画像（1200x630 推奨）
+        url: `${process.env.NEXT_PUBLIC_CMS_URL}/default-ogp.jpg`, // OGP用画像（1200x630 推奨）
         width: 1200,
         height: 630,
         alt: "ポートフォリオのOGP画像",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     title: "ポートフォリオ | エンジニアの実績一覧",
     description:
       "フロントエンド・バックエンド・デザインなど幅広い実績を紹介しています。",
-    images: ["https://yourdomain.com/ogp-home.jpg"],
+    images: [`${process.env.NEXT_PUBLIC_CMS_URL}/default-ogp.jpg`],
   },
 };
 
