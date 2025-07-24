@@ -1,29 +1,29 @@
-// app/api/revalidate/route.ts (App Router) or pages/api/revalidate.ts (Pages Router)
-
+// /app/api/revalidate/route.ts（Next.js 13〜の App Router）
 import { NextRequest, NextResponse } from "next/server";
 
-const secret = process.env.REVALIDATE_SECRET; // Webhookセキュリティキー
+export async function POST(req: NextRequest) {
+  const body = await req.json();
 
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const path = searchParams.get("path");
-  const token = searchParams.get("secret");
+  const secret = req.nextUrl.searchParams.get("secret");
+  const slug = body?.slug;
 
-  if (token !== secret || !path) {
-    return NextResponse.json(
-      { revalidated: false, message: "Unauthorized" },
-      { status: 401 },
-    );
+  if (secret !== process.env.REVALIDATE_SECRET_TOKEN) {
+    return NextResponse.json({ message: "Invalid token" }, { status: 401 });
+  }
+
+  if (!slug) {
+    return NextResponse.json({ message: "Missing slug" }, { status: 400 });
   }
 
   try {
+    const path = `/works/${slug}`; // 再生成したいページのパス
     await fetch(
-      `${process.env.NEXT_PUBLIC_SITE_URL}/api/revalidate-path?path=${path}`,
+      `http://localhost:3000/api/revalidate?path=${path}&secret=${process.env.REVALIDATE_SECRET_TOKEN}`,
     );
-    return NextResponse.json({ revalidated: true });
+    return NextResponse.json({ revalidated: true, path });
   } catch (err) {
     return NextResponse.json(
-      { revalidated: false, error: err },
+      { message: "Error revalidating" },
       { status: 500 },
     );
   }
