@@ -1,3 +1,5 @@
+import { MotionWrapper } from "@/components/ui/MotionWrapper"
+
 type SkillCategory = {
   name: string
   icon?: string
@@ -26,6 +28,8 @@ export default function SkillSection() {
   return (
     <section className="py-12 px-4 bg-gray-50">
       <h2 className="text-3xl font-bold text-center mb-8">スキルセット</h2>
+      <MotionWrapper>
+
       <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6">
         {skillData.map((category) => (
           <div key={category.name} className="bg-white rounded-xl shadow p-6">
@@ -43,6 +47,7 @@ export default function SkillSection() {
           </div>
         ))}
       </div>
+    </MotionWrapper>
     </section>
   )
 }
