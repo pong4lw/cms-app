@@ -4,9 +4,7 @@ import { Metadata } from "next";
 import PageLayout from "@/components/PageLayout";
 
 type Props = {
-  params: {
-    slug: string;
-  };
+  params: { slug: string };
 };
 
 // ✅ メタデータ生成（SEO対応）

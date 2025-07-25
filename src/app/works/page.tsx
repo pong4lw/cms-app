@@ -2,14 +2,6 @@
 import { fetchWorks } from "@/lib/fetchWorks";
 import Link from "next/link";
 
-
-type Props = {
-  params: {
-    slug: string;
-  };
-};
-
-
 export default async function WorksPage() {
   const works = await fetchWorks();
 
