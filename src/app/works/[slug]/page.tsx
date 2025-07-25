@@ -8,8 +8,9 @@ type Props = {
 };
 
 // ✅ メタデータ生成（SEO対応）
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const work = await fetchWorkBySlug(params.slug);
+export async function generateMetadata({ params }: Props) {
+  const { slug } = params;
+  const work = await fetchWorkBySlug(slug);
 
   if (!work) {
     return {
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = work.description ?? "制作実績の詳細ページです。";
   const ogImage =
     work.image?.url ?? `${process.env.NEXT_PUBLIC_CMS_URL}/default-ogp.jpg`;
-  const url = `${process.env.NEXT_PUBLIC_CMS_URL}/works/${params.slug}`;
+  const url = `${process.env.NEXT_PUBLIC_CMS_URL}/works/${slug}`;
 
   return {
     title,
