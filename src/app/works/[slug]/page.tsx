@@ -1,17 +1,18 @@
+// src/app/works/[slug]/page.tsx
 import { fetchWorkBySlug } from "@/lib/fetchWorks";
 import { notFound } from "next/navigation";
-import type { Metadata, ResolvingMetadata } from "next";
+import { Metadata } from "next";
 import PageLayout from "@/components/PageLayout";
 
-type Props = {
-  params: { slug: string };
+// 型定義（Next.js App Router の PageParams に準拠）
+type PageProps = {
+  params: {
+    slug: string;
+  };
 };
 
 // ✅ メタデータ生成（SEO対応）
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = params;
   const work = await fetchWorkBySlug(slug);
 
@@ -55,8 +56,9 @@ export async function generateMetadata(
 }
 
 // ✅ ページ本体
-export default async function WorkDetailPage({ params }: Props) {
+export default async function WorkDetailPage({ params }: PageProps) {
   const work = await fetchWorkBySlug(params.slug);
+
   if (!work) return notFound();
 
   const html = work.content ?? "";
@@ -64,6 +66,7 @@ export default async function WorkDetailPage({ params }: Props) {
   return (
     <main className="max-w-3xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4">{work.title}</h1>
+
       {work.image && (
         <img
           src={work.image.url}
@@ -72,8 +75,7 @@ export default async function WorkDetailPage({ params }: Props) {
         />
       )}
 
-      {/* ここは必要に応じて変更 */}
-      {work.layout && <PageLayout layout={work.layout} />}
+      <PageLayout layout={work.layout} />
 
       <div className="prose" dangerouslySetInnerHTML={{ __html: html }} />
     </main>
