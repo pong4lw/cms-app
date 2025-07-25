@@ -27,7 +27,7 @@ function RichTextRenderer({ richText }: RichTextProps) {
     }
 
     if (node.type === "text") {
-      let content = node.text || "";
+      const content = node.text || "";
       if (node.format === "bold") {
         return <strong key={key}>{content}</strong>;
       }

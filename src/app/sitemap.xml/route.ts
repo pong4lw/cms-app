@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/sitemap.xml/route.ts
 import { NextResponse } from "next/server";
 
