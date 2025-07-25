@@ -1,9 +1,9 @@
 // app/works/page.tsx
-import { fetchWorks } from '@/lib/fetchWorks'
-import Link from 'next/link'
+import { fetchWorks } from "@/lib/fetchWorks";
+import Link from "next/link";
 
 export default async function WorksPage() {
-  const works = await fetchWorks()
+  const works = await fetchWorks();
 
   return (
     <main className="max-w-5xl mx-auto p-6">
@@ -19,6 +19,7 @@ export default async function WorksPage() {
                 className="rounded-lg mt-2"
               />
             )}
+            <p className="text-sm mt-2">{work.content}</p>
             <p className="text-sm mt-2">{work.excerpt}</p>
             <Link
               href={`/works/${work.slug}`}
@@ -30,5 +31,5 @@ export default async function WorksPage() {
         ))}
       </ul>
     </main>
-  )
+  );
 }

@@ -1,6 +1,7 @@
 import { fetchWorkBySlug } from "@/lib/fetchWorks";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
+import PageLayout from "@/components/PageLayout";
 
 type Props = {
   params: { slug: string };
@@ -67,6 +68,8 @@ export default async function WorkDetailPage({ params }: Props) {
           className="rounded-xl mb-6"
         />
       )}
+      <PageLayout layout={page.layout} />
+
       <div className="prose" dangerouslySetInnerHTML={{ __html: html }} />
     </main>
   );

@@ -1,0 +1,34 @@
+name: CI
+
+# ✅ main ブランチに push されたときにトリガー
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # コードをチェックアウト
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Node.js をセットアップ
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      # npm install 実行
+      - name: Install dependencies
+        run: npm install
+
+      # リンター実行（例: ESLint）
+      - name: Run linter
+        run: npm run lint
+
+      # テスト実行
+      - name: Run tests
+        run: npm test

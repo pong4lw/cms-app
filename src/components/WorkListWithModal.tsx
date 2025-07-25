@@ -14,6 +14,7 @@ export default function WorkListWithModal({ posts }: { posts: Post[] }) {
   const [modalPost, setModalPost] = useState<Post | null>(null);
 
   const handleOpenModal = (post: Post) => {
+    console.log(post);
     setModalPost(post);
     setIsOpen(true);
   };
@@ -51,6 +52,7 @@ export default function WorkListWithModal({ posts }: { posts: Post[] }) {
           >
             <h3 className="text-2xl font-bold mb-4">{modalPost.title}</h3>
             <p>ここに制作実績の詳細を表示します。</p>
+            <p className="text-sm mt-2">{modalPost.content}</p>
             <div className="mt-6 text-right">
               <button
                 onClick={handleCloseModal}
