@@ -1,6 +1,6 @@
 import { fetchWorkBySlug } from "@/lib/fetchWorks";
 import { notFound } from "next/navigation";
-import { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 import PageLayout from "@/components/PageLayout";
 
 type Props = {
@@ -8,7 +8,10 @@ type Props = {
 };
 
 // ✅ メタデータ生成（SEO対応）
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const { slug } = params;
   const work = await fetchWorkBySlug(slug);
 
@@ -56,7 +59,6 @@ export default async function WorkDetailPage({ params }: Props) {
   const work = await fetchWorkBySlug(params.slug);
   if (!work) return notFound();
 
-  // RichTextをHTMLへ変換（null/undefined 対策付き）
   const html = work.content ?? "";
 
   return (
@@ -69,7 +71,9 @@ export default async function WorkDetailPage({ params }: Props) {
           className="rounded-xl mb-6"
         />
       )}
-      <PageLayout layout={page.layout} />
+
+      {/* ここは必要に応じて変更 */}
+      {work.layout && <PageLayout layout={work.layout} />}
 
       <div className="prose" dangerouslySetInnerHTML={{ __html: html }} />
     </main>
