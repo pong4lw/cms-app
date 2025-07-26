@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/app/works/[slug]/page.tsx
-import { fetchWorkBySlug } from "@/lib/ fetchWorks";
+import { fetchWorkBySlug } from "@/lib/fetchWorks";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import PageLayout from "@/components/PageLayout";
