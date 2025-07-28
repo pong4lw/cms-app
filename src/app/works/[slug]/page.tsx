@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// ./src/app/works/[slug]/page.tsx
-
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PageLayout from "@/components/PageLayout";
 
 type Work = {
   title: string;
-  slug: string; 
+  slug: string;
   description?: string;
   content?: string;
   layout?: any;
@@ -25,34 +23,43 @@ type Props = {
   params: WorkPageParams;
 };
 
-
-// ✅ ワーク詳細取得（APIから）
+// ✅ API経由で単一のworkを取得
 async function fetchWorkBySlug(slug: string): Promise<Work | null> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_CMS_URL}/api/works?where[slug][equals]=${slug}`,
-    {
-      cache: "force-cache", // ISRやSSGに最適
-      next: { revalidate: 60 }, // ISR用（オプション）
-    }
-  );
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_CMS_URL}/api/works?where[slug][equals]=${slug}`,
+      {
+        cache: "force-cache",
+        next: { revalidate: 60 },
+      }
+    );
 
-  if (!res.ok) return null;
+    if (!res.ok) return null;
 
-  const json = await res.json();
-  return json?.docs?.[0] ?? null;
+    const json = await res.json();
+    return json?.docs?.[0] ?? null;
+  } catch (error) {
+    console.error("Error fetching work:", error);
+    return null;
+  }
 }
 
-// ✅ generateStaticParams（slug一覧を取得）
+// ✅ SSG用のslug一覧取得
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_CMS_URL}/api/works?limit=1000&depth=0&select=slug`,
-    { cache: "force-cache" }
-  );
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_CMS_URL}/api/works?limit=1000&depth=0&select=slug`,
+      { cache: "force-cache" }
+    );
 
-  if (!res.ok) return [];
+    if (!res.ok) return [];
 
-  const json = await res.json();
-  return json.docs.map((doc: { slug: string }) => ({ slug: doc.slug }));
+    const json = await res.json();
+    return json.docs.map((doc: { slug: string }) => ({ slug: doc.slug }));
+  } catch (error) {
+    console.error("Error generating static params:", error);
+    return [];
+  }
 }
 
 // ✅ SEO用メタデータ
@@ -102,16 +109,16 @@ export async function generateMetadata({
   };
 }
 
-// ✅ ページコンポーネント
+// ✅ 詳細ページ本体
 export default async function WorkDetailPage({ params }: Props) {
-  const { slug } = params;
-  const work = await fetchWorkBySlug(slug);
+  const work = await fetchWorkBySlug(params.slug);
 
   if (!work) return notFound();
 
   return (
     <main className="max-w-3xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-4">{work.title}</h1>
+
       {work.image && (
         <img
           src={work.image.url}
@@ -119,7 +126,9 @@ export default async function WorkDetailPage({ params }: Props) {
           className="rounded-xl mb-6"
         />
       )}
+
       {work.layout && <PageLayout layout={work.layout} />}
+
       {work.content && (
         <div
           className="prose"
