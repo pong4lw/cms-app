@@ -1,23 +1,59 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// ./src/app/works/[slug]/page.tsx
 
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { fetchWorkBySlug } from "@/lib/fetchWorks";
 import PageLayout from "@/components/PageLayout";
-import getPayload from "payload"; // 👈 追加
-import configPromise from "@/payload.config"; // 👈 追加
 
-// ✅ 型定義
-type WorkPageParams = {
-  params: {
-    slug: string;
+type Work = {
+  title: string;
+  slug: string;
+  description?: string;
+  content?: string;
+  layout?: any;
+  image?: {
+    url: string;
+    alt?: string;
   };
 };
 
-// ✅ SEO メタデータ生成
-export async function generateMetadata({ params }: WorkPageParams): Promise<Metadata> {
-  const { slug } = params;
-  const work = await fetchWorkBySlug(slug);
+type WorkPageParams = { slug: string };
+
+// ✅ ワーク詳細取得（APIから）
+async function fetchWorkBySlug(slug: string): Promise<Work | null> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/works?where[slug][equals]=${slug}`,
+    {
+      cache: "force-cache", // ISRやSSGに最適
+      next: { revalidate: 60 }, // ISR用（オプション）
+    }
+  );
+
+  if (!res.ok) return null;
+
+  const json = await res.json();
+  return json?.docs?.[0] ?? null;
+}
+
+// ✅ generateStaticParams（slug一覧を取得）
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_CMS_URL}/api/works?limit=1000&depth=0&select=slug`,
+    { cache: "force-cache" }
+  );
+
+  if (!res.ok) return [];
+
+  const json = await res.json();
+  return json.docs.map((doc: { slug: string }) => ({ slug: doc.slug }));
+}
+
+// ✅ SEO用メタデータ
+export async function generateMetadata({
+  params,
+}: {
+  params: WorkPageParams;
+}): Promise<Metadata> {
+  const work = await fetchWorkBySlug(params.slug);
 
   if (!work) {
     return {
@@ -30,7 +66,7 @@ export async function generateMetadata({ params }: WorkPageParams): Promise<Meta
   const description = work.description ?? "制作実績の詳細ページです。";
   const ogImage =
     work.image?.url ?? `${process.env.NEXT_PUBLIC_CMS_URL}/default-ogp.jpg`;
-  const url = `${process.env.NEXT_PUBLIC_CMS_URL}/works/${slug}`;
+  const url = `${process.env.NEXT_PUBLIC_SITE_URL}/works/${params.slug}`;
 
   return {
     title,
@@ -58,31 +94,14 @@ export async function generateMetadata({ params }: WorkPageParams): Promise<Meta
   };
 }
 
-// ✅ ISR/SSG 用 slug リスト生成
-export async function generateStaticParams(): Promise<
-  { slug: string }[]
-> {
-  const payload = await getPayload({ config: configPromise });
-  const pages = await payload.find({
-    collection: "pages",
-    draft: false,
-    limit: 1000,
-    overrideAccess: false,
-    pagination: false,
-    select: { slug: true },
-  });
-
-  return pages.docs
-    .filter((doc) => doc.slug !== "home")
-    .map(({ slug }) => ({ slug }));
-}
-
 // ✅ ページコンポーネント
-export default async function WorkDetailPage({ params }: WorkPageParams) {
+export default async function WorkDetailPage({
+  params,
+}: {
+  params: WorkPageParams;
+}) {
   const work = await fetchWorkBySlug(params.slug);
   if (!work) return notFound();
-
-  const html = work.content ?? "";
 
   return (
     <main className="max-w-3xl mx-auto p-6">
@@ -90,12 +109,17 @@ export default async function WorkDetailPage({ params }: WorkPageParams) {
       {work.image && (
         <img
           src={work.image.url}
-          alt={work.image.alt}
+          alt={work.image.alt ?? work.title}
           className="rounded-xl mb-6"
         />
       )}
-      <PageLayout layout={work.layout} />
-      <div className="prose" dangerouslySetInnerHTML={{ __html: html }} />
+      {work.layout && <PageLayout layout={work.layout} />}
+      {work.content && (
+        <div
+          className="prose"
+          dangerouslySetInnerHTML={{ __html: work.content }}
+        />
+      )}
     </main>
   );
 }
