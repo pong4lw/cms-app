@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import Modal from "./components/Modal"; // パスを調整してください
+import Modal from "@/components/Modal"; // パスを調整してください
 import ClientHome from '@/components/ClientHome'
 
 async function getPosts() {
