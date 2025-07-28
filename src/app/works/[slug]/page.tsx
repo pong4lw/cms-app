@@ -2,14 +2,14 @@ import { fetchWorkBySlug } from "@/lib/fetchWorks";
 import { notFound } from "next/navigation";
 import PageLayout from "@/components/PageLayout";
 
-type Props = {
+type WorkPageProps = {
   params: {
     slug: string;
   };
 };
 
 // ✅ メタデータ生成（SEO対応）
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: WorkPageProps) {
   const { slug } = params;
   const work = await fetchWorkBySlug(slug);
 
