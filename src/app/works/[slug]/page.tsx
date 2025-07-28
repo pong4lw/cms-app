@@ -3,13 +3,14 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PageLayout from "@/components/PageLayout";
+import Image from "next/image";
 
 type Work = {
   title: string;
   slug: string;
   description?: string;
   content?: string;
-  layout?: any;
+  layout?: unknown;
   image?: {
     url: string;
     alt?: string;
@@ -107,7 +108,7 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
       <h1 className="text-3xl font-bold mb-4">{work.title}</h1>
 
       {work.image && (
-        <img
+        <Image
           src={work.image.url}
           alt={work.image.alt ?? work.title}
           className="rounded-xl mb-6"
