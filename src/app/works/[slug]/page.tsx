@@ -1,17 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Metadata } from "next";
 import { fetchWorkBySlug } from "@/lib/fetchWorks";
 import { notFound } from "next/navigation";
 import PageLayout from "@/components/PageLayout";
 import { InferGetStaticPropsType } from 'next';
+import type { PageProps } from 'next/app';
 
 type WorkPageParams = { slug: string };
 
-type WorkPageProps = {
-  params: WorkPageParams;
-};
 
 // ✅ メタデータ生成（SEO対応）
-export async function generateMetadata({ params }: { params: WorkPageProps }) {
+export async function generateMetadata({ params }: { params: WorkPageParams }) {
   const { slug } = params;
   const work = await fetchWorkBySlug(slug);
 
@@ -73,7 +73,7 @@ export async function generateStaticParams(): Promise<
 }
 
 // ✅ ページ本体
-export default async function WorkDetailPage({ params }: { params: WorkPageProps }) {
+export default async function WorkDetailPage({ params }: { params: WorkPageParams }) {
   const work = await fetchWorkBySlug(params.slug);
   if (!work) return notFound();
 
