@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: WorkPageProps) {
 }
 
 // ✅ ページ本体
-export default async function WorkDetailPage({ params }: Props) {
+export default async function WorkDetailPage({ params }: WorkPageProps) {
   const work = await fetchWorkBySlug(params.slug);
   if (!work) return notFound();
 
