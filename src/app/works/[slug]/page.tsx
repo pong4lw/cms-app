@@ -6,7 +6,7 @@ import { InferGetStaticPropsType } from 'next';
 type WorkPageProps = { slug: string };
 
 // ✅ メタデータ生成（SEO対応）
-export async function generateMetadata({ params }: { params: WorkPageParams }) {
+export async function generateMetadata({ params }: { params: WorkPageProps }) {
   const { slug } = params;
   const work = await fetchWorkBySlug(slug);
 
@@ -68,7 +68,7 @@ export async function generateStaticParams(): Promise<
 }
 
 // ✅ ページ本体
-export default async function WorkDetailPage({ params }: { params: WorkPageParams }) {
+export default async function WorkDetailPage({ params }: { params: WorkPageProps }) {
   const work = await fetchWorkBySlug(params.slug);
   if (!work) return notFound();
 
