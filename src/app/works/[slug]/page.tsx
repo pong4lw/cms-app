@@ -99,11 +99,8 @@ export async function generateMetadata(
 }
 
 // ----------- ページ本体 -----------
-export default async function WorkDetailPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default async function WorkDetailPage({ params }: any) {
+
   const work = await fetchWorkBySlug(params.slug);
   if (!work) return notFound();
 
