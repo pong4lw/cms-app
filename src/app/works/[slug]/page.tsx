@@ -1,6 +1,5 @@
 // src/app/works/[slug]/page.tsx
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PageLayout from "@/components/PageLayout";
@@ -17,13 +16,12 @@ type Work = {
   };
 };
 
-type PageProps = {
+type WorkDetailPageProps = {
   params: {
     slug: string;
   };
 };
 
-// ----------- Work取得関数 -----------
 async function fetchWorkBySlug(slug: string): Promise<Work | null> {
   try {
     const res = await fetch(
@@ -42,7 +40,6 @@ async function fetchWorkBySlug(slug: string): Promise<Work | null> {
   }
 }
 
-// ----------- 静的パス生成 -----------
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   try {
     const res = await fetch(
@@ -58,13 +55,10 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   }
 }
 
-// ----------- メタデータ生成 -----------
-export async function generateMetadata(props: {
-  params: { slug: string };
-}): Promise<Metadata> {
-  const { params } = props;
+export async function generateMetadata({
+  params,
+}: WorkDetailPageProps): Promise<Metadata> {
   const work = await fetchWorkBySlug(params.slug);
-
   if (!work) {
     return {
       title: "ページが見つかりません",
@@ -104,8 +98,7 @@ export async function generateMetadata(props: {
   };
 }
 
-// ----------- ページ本体 -----------
-export default async function WorkDetailPage({ params }: PageProps) {
+export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
   const work = await fetchWorkBySlug(params.slug);
   if (!work) return notFound();
 
