@@ -1,9 +1,14 @@
+import { Metadata } from "next";
 import { fetchWorkBySlug } from "@/lib/fetchWorks";
 import { notFound } from "next/navigation";
 import PageLayout from "@/components/PageLayout";
 import { InferGetStaticPropsType } from 'next';
 
-type WorkPageProps = { slug: string };
+type WorkPageParams = { slug: string };
+
+type WorkPageProps = {
+  params: WorkPageParams;
+};
 
 // ✅ メタデータ生成（SEO対応）
 export async function generateMetadata({ params }: { params: WorkPageProps }) {
