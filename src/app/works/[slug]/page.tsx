@@ -1,3 +1,5 @@
+// src/app/works/[slug]/page.tsx
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -15,15 +17,7 @@ type Work = {
   };
 };
 
-type WorkPageParams = {
-  slug: string;
-};
-
-type Props = {
-  params: WorkPageParams;
-};
-
-// ✅ API経由で単一のworkを取得
+// ----------- Work取得関数 -----------
 async function fetchWorkBySlug(slug: string): Promise<Work | null> {
   try {
     const res = await fetch(
@@ -33,9 +27,7 @@ async function fetchWorkBySlug(slug: string): Promise<Work | null> {
         next: { revalidate: 60 },
       }
     );
-
     if (!res.ok) return null;
-
     const json = await res.json();
     return json?.docs?.[0] ?? null;
   } catch (error) {
@@ -44,16 +36,14 @@ async function fetchWorkBySlug(slug: string): Promise<Work | null> {
   }
 }
 
-// ✅ SSG用のslug一覧取得
+// ----------- 静的パス生成 -----------
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_CMS_URL}/api/works?limit=1000&depth=0&select=slug`,
       { cache: "force-cache" }
     );
-
     if (!res.ok) return [];
-
     const json = await res.json();
     return json.docs.map((doc: { slug: string }) => ({ slug: doc.slug }));
   } catch (error) {
@@ -62,12 +52,11 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   }
 }
 
-// ✅ SEO用メタデータ
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
+// ----------- メタデータ生成 -----------
+export async function generateMetadata(
+  props: { params: { slug: string } }
+): Promise<Metadata> {
+  const { params } = props;
   const work = await fetchWorkBySlug(params.slug);
 
   if (!work) {
@@ -109,16 +98,13 @@ export async function generateMetadata({
   };
 }
 
-// ✅ 詳細ページ本体
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+// ----------- ページ本体 -----------
 export default async function WorkDetailPage({
   params,
 }: {
   params: { slug: string };
 }) {
   const work = await fetchWorkBySlug(params.slug);
-
   if (!work) return notFound();
 
   return (
