@@ -17,6 +17,12 @@ type Work = {
   };
 };
 
+type PageProps = {
+  params: {
+    slug: string;
+  };
+};
+
 // ----------- Work取得関数 -----------
 async function fetchWorkBySlug(slug: string): Promise<Work | null> {
   try {
@@ -25,7 +31,7 @@ async function fetchWorkBySlug(slug: string): Promise<Work | null> {
       {
         cache: "force-cache",
         next: { revalidate: 60 },
-      }
+      },
     );
     if (!res.ok) return null;
     const json = await res.json();
@@ -41,7 +47,7 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_CMS_URL}/api/works?limit=1000&depth=0&select=slug`,
-      { cache: "force-cache" }
+      { cache: "force-cache" },
     );
     if (!res.ok) return [];
     const json = await res.json();
@@ -53,9 +59,9 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
 }
 
 // ----------- メタデータ生成 -----------
-export async function generateMetadata(
-  props: { params: { slug: string } }
-): Promise<Metadata> {
+export async function generateMetadata(props: {
+  params: { slug: string };
+}): Promise<Metadata> {
   const { params } = props;
   const work = await fetchWorkBySlug(params.slug);
 
@@ -99,8 +105,7 @@ export async function generateMetadata(
 }
 
 // ----------- ページ本体 -----------
-export default async function WorkDetailPage({ params }: any) {
-
+export default async function WorkDetailPage({ params }: PageProps) {
   const work = await fetchWorkBySlug(params.slug);
   if (!work) return notFound();
 
