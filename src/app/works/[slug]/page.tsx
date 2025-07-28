@@ -1,15 +1,12 @@
 import { fetchWorkBySlug } from "@/lib/fetchWorks";
 import { notFound } from "next/navigation";
 import PageLayout from "@/components/PageLayout";
+import { InferGetStaticPropsType } from 'next';
 
-type WorkPageProps = {
-  params: {
-    slug: string;
-  };
-};
+type WorkPageProps = { slug: string };
 
 // ✅ メタデータ生成（SEO対応）
-export async function generateMetadata({ params }: WorkPageProps) {
+export async function generateMetadata({ params }: { params: WorkPageParams }) {
   const { slug } = params;
   const work = await fetchWorkBySlug(slug);
 
@@ -52,8 +49,26 @@ export async function generateMetadata({ params }: WorkPageProps) {
   };
 }
 
+export async function generateStaticParams(): Promise<
+  { slug: string }[]
+> {
+  const payload = await getPayload({ config: configPromise });
+  const pages = await payload.find({
+    collection: "pages",
+    draft: false,
+    limit: 1000,
+    overrideAccess: false,
+    pagination: false,
+    select: { slug: true },
+  });
+
+  return pages.docs
+    .filter((doc) => doc.slug !== "home")
+    .map(({ slug }) => ({ slug }));
+}
+
 // ✅ ページ本体
-export default async function WorkDetailPage({ params }: WorkPageProps) {
+export default async function WorkDetailPage({ params }: { params: WorkPageParams }) {
   const work = await fetchWorkBySlug(params.slug);
   if (!work) return notFound();
 
