@@ -1,17 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Metadata } from "next";
-import { fetchWorkBySlug } from "@/lib/fetchWorks";
 import { notFound } from "next/navigation";
+import { fetchWorkBySlug } from "@/lib/fetchWorks";
 import PageLayout from "@/components/PageLayout";
-import { InferGetStaticPropsType } from 'next';
-import type { PageProps } from 'next/app';
+import getPayload from "payload"; // 👈 追加
+import configPromise from "@/payload.config"; // 👈 追加
 
-type WorkPageParams = { slug: string };
+// ✅ 型定義
+type WorkPageParams = {
+  params: {
+    slug: string;
+  };
+};
 
-
-// ✅ メタデータ生成（SEO対応）
-export async function generateMetadata({ params }: { params: WorkPageParams }) {
+// ✅ SEO メタデータ生成
+export async function generateMetadata({ params }: WorkPageParams): Promise<Metadata> {
   const { slug } = params;
   const work = await fetchWorkBySlug(slug);
 
@@ -54,6 +58,7 @@ export async function generateMetadata({ params }: { params: WorkPageParams }) {
   };
 }
 
+// ✅ ISR/SSG 用 slug リスト生成
 export async function generateStaticParams(): Promise<
   { slug: string }[]
 > {
@@ -72,8 +77,8 @@ export async function generateStaticParams(): Promise<
     .map(({ slug }) => ({ slug }));
 }
 
-// ✅ ページ本体
-export default async function WorkDetailPage({ params }: { params: WorkPageParams }) {
+// ✅ ページコンポーネント
+export default async function WorkDetailPage({ params }: WorkPageParams) {
   const work = await fetchWorkBySlug(params.slug);
   if (!work) return notFound();
 
