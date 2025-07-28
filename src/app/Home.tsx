@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import Link from "next/link";
-import { useState } from "react";
 import Modal from "@/components/Modal"; // パスを調整してください
-import ClientHome from '@/components/ClientHome'
+import ClientHome from "@/components/ClientHome";
 
 async function getPosts() {
   try {
@@ -27,8 +26,5 @@ async function getPosts() {
 
 export default async function Home() {
   const { docs = [] } = await getPosts();
-
-  // Note: useState/useEffectはクライアントコンポーネントでのみ使用可能
-  // ここからクライアントコンポーネントに変更する必要あり
   return <ClientHome docs={docs} />;
 }
