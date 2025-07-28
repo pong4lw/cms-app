@@ -7,7 +7,7 @@ import PageLayout from "@/components/PageLayout";
 
 type Work = {
   title: string;
-  slug: string;
+  slug: string; 
   description?: string;
   content?: string;
   layout?: any;
@@ -17,7 +17,14 @@ type Work = {
   };
 };
 
-type WorkPageParams = { slug: string };
+type WorkPageParams = {
+  slug: string;
+};
+
+type Props = {
+  params: WorkPageParams;
+};
+
 
 // ✅ ワーク詳細取得（APIから）
 async function fetchWorkBySlug(slug: string): Promise<Work | null> {
@@ -96,12 +103,10 @@ export async function generateMetadata({
 }
 
 // ✅ ページコンポーネント
-export default async function WorkDetailPage({
-  params,
-}: {
-  params: WorkPageParams;
-}) {
-  const work = await fetchWorkBySlug(params.slug);
+export default async function WorkDetailPage({ params }: Props) {
+  const { slug } = params;
+  const work = await fetchWorkBySlug(slug);
+
   if (!work) return notFound();
 
   return (
