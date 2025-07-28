@@ -66,7 +66,7 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
 export async function generateMetadata({
   params,
 }: {
-  params: WorkPageParams;
+  params: { slug: string };
 }): Promise<Metadata> {
   const work = await fetchWorkBySlug(params.slug);
 
@@ -110,7 +110,11 @@ export async function generateMetadata({
 }
 
 // ✅ 詳細ページ本体
-export default async function WorkDetailPage({ params }: Props) {
+export default async function WorkDetailPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const work = await fetchWorkBySlug(params.slug);
 
   if (!work) return notFound();
