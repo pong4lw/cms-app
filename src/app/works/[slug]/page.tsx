@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // ./src/app/works/[slug]/page.tsx
 
 import { Metadata } from "next";
