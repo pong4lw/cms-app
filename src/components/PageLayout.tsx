@@ -17,7 +17,10 @@ type RichTextProps = {
 };
 
 function RichTextRenderer({ richText }: RichTextProps) {
-  const renderNode = (node: RichTextNode, key: number): JSX.Element | null => {
+  const renderNode = (
+    node: RichTextNode,
+    key: number,
+  ): React.ReactElement | null => {
     if (node.type === "paragraph") {
       return (
         <p key={key}>
