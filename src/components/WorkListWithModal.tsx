@@ -7,6 +7,7 @@ interface Post {
   slug: string;
   title: string;
   publishedAt?: string;
+  content?: string;
 }
 
 export default function WorkListWithModal({ posts }: { posts: Post[] }) {

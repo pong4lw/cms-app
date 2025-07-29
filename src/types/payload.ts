@@ -12,7 +12,15 @@ export type LayoutBlock = {
 
 type RichTextNode = {
   type: string;
-  text?: string;
-  format?: string;
   children?: RichTextNode[];
+  // その他必要なプロパティ
+};
+
+type RichTextProps = {
+  richText: {
+    root: {
+      type: "doc"; // ← 明示的に必要！
+      children: RichTextNode[];
+    };
+  };
 };

@@ -4,7 +4,7 @@ import type { LayoutBlock } from "@/types/payload";
 
 // --- RichTextレンダラーの型と定義 ---
 type RichTextNode = {
-  type: string;
+  type?: string;
   text?: string;
   format?: string;
   children?: RichTextNode[];
