@@ -53,11 +53,8 @@ export async function generateStaticParams() {
 }
 
 // メタデータ
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
+// @ts-ignore
+export async function generateMetadata({ params }: any): Promise<Metadata> {
   const work = await fetchWorkBySlug(params.slug);
   if (!work) {
     return {
@@ -99,11 +96,8 @@ export async function generateMetadata({
 }
 
 // ページ本体
-export default async function WorkDetailPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+// @ts-ignore
+export default async function WorkDetailPage({ params }: any) {
   const work = await fetchWorkBySlug(params.slug);
   if (!work) return notFound();
 
