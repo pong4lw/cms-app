@@ -12,6 +12,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "types": ["react"],
     "incremental": true,
     "strict": false, // 厳格な型チェックを無効化（できれば推奨しない）
     "plugins": [
