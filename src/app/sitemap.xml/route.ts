@@ -2,18 +2,29 @@
 // app/sitemap.xml/route.ts
 import { NextResponse } from "next/server";
 
-// Payload CMSなどから取得した記事一覧（ここではダミー）
 async function getWorks(): Promise<{ slug: string; updatedAt: string }[]> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/pages?sort=-createdAt`,
-    { next: { revalidate: 3600 } },
-  );
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
-  const json = await res.json();
-  return json?.docs?.map((post: any) => ({
-    slug: post.slug,
-    updatedAt: post.updatedAt || new Date().toISOString(),
-  }));
+  try {
+    const res = await fetch(`${baseUrl}/api/pages?sort=-createdAt`, {
+      next: { revalidate: 3600 },
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("API fetch error:", res.status, text);
+      return [];
+    }
+
+    const json = await res.json();
+    return json?.docs?.map((post: any) => ({
+      slug: post.slug,
+      updatedAt: post.updatedAt || new Date().toISOString(),
+    }));
+  } catch (err) {
+    console.error("Fetch exception:", err);
+    return [];
+  }
 }
 
 export async function GET() {
