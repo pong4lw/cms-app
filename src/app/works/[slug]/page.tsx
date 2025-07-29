@@ -53,7 +53,7 @@ export async function generateStaticParams() {
 }
 
 // メタデータ
-// @ts-ignore
+// @ts-expect-error
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const work = await fetchWorkBySlug(params.slug);
   if (!work) {
@@ -96,7 +96,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 }
 
 // ページ本体
-// @ts-ignore
+// @ts-expect-error
 export default async function WorkDetailPage({ params }: any) {
   const work = await fetchWorkBySlug(params.slug);
   if (!work) return notFound();
