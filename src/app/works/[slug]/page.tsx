@@ -1,28 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/app/works/[slug]/page.tsx
 
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PageLayout from "@/components/PageLayout";
-import Image from "next/image";
 
 type Work = {
   title: string;
   slug: string;
   description?: string;
   content?: string;
-  layout?: unknown;
+  layout?: any;
   image?: {
     url: string;
     alt?: string;
   };
 };
 
-type WorkDetailPageProps = {
-  params: {
-    slug: string;
-  };
-};
-
+// Work取得
 async function fetchWorkBySlug(slug: string): Promise<Work | null> {
   try {
     const res = await fetch(
@@ -41,7 +36,8 @@ async function fetchWorkBySlug(slug: string): Promise<Work | null> {
   }
 }
 
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
+// 静的パス
+export async function generateStaticParams() {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_CMS_URL}/api/works?limit=1000&depth=0&select=slug`,
@@ -56,9 +52,12 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   }
 }
 
+// メタデータ
 export async function generateMetadata({
   params,
-}: WorkDetailPageProps): Promise<Metadata> {
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
   const work = await fetchWorkBySlug(params.slug);
   if (!work) {
     return {
@@ -99,7 +98,12 @@ export async function generateMetadata({
   };
 }
 
-export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
+// ページ本体
+export default async function WorkDetailPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const work = await fetchWorkBySlug(params.slug);
   if (!work) return notFound();
 
@@ -108,7 +112,7 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
       <h1 className="text-3xl font-bold mb-4">{work.title}</h1>
 
       {work.image && (
-        <Image
+        <img
           src={work.image.url}
           alt={work.image.alt ?? work.title}
           className="rounded-xl mb-6"
